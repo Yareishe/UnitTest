@@ -20,15 +20,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
-          python-version: 3.x
+          java-version: 11  # Ви можете вказати необхідну версію Java
 
-      - name: Install dependencies
+      - name: Download and install Gradle
         run: |
-          pip install -r requirements.txt
-        working-directory: ./path/to/your/code
+          wget https://services.gradle.org/distributions/gradle-7.0-bin.zip -P /tmp
+          unzip -d /opt/gradle /tmp/gradle-7.0-bin.zip
+        env:
+          GRADLE_HOME: /opt/gradle/gradle-7.0
+          PATH: ${{ env.GRADLE_HOME }}/bin:${{ env.PATH }}
+
+      - name: Build and run tests with Gradle
+        run: |
+          ./gradlew build  # Змініть на команду, яка виконує збірку та запуск тестів у вашому проекті
 
       - name: Run unit tests
         run: |
